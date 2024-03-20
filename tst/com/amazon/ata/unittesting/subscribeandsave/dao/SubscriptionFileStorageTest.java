@@ -17,7 +17,9 @@ public class SubscriptionFileStorageTest {
 
     private static final String TEST_FILE_PATH = "resources/unittesting/classroom/subscribeandsave/subscriptions.csv";
     private static final String ASIN = "B01BMDAVIY";
+    private static final String ASIN_2 =  "";
     private static final String CUSTOMER_ID = "amzn1.account.AEZI3A063427738YROOFT8WCXKDE";
+    private static final String CUSTOMER_ID_2 = "amzn1.account.AEZI3A063427738YROOFT8WCXKDE";
 
     private SubscriptionFileStorage subscriptionFileStorage;
 
@@ -32,10 +34,10 @@ public class SubscriptionFileStorageTest {
         // GIVEN - a new subscription to save
         int frequency = 1;
         Subscription newSubscription = Subscription.builder()
-                                                   .withAsin(ASIN)
-                                                   .withCustomerId(CUSTOMER_ID)
-                                                   .withFrequency(frequency)
-                                                   .build();
+                .withAsin(ASIN)
+                .withCustomerId(CUSTOMER_ID)
+                .withFrequency(frequency)
+                .build();
 
         // WHEN - create a new subscription
         Subscription result = subscriptionFileStorage.createSubscription(newSubscription);
@@ -47,13 +49,13 @@ public class SubscriptionFileStorageTest {
         assertNotNull(result.getId(), "Writing subscription should return a subscription with an id field");
         // the customer ID should match
         assertEquals(CUSTOMER_ID, result.getCustomerId(),
-                     "Writing a subscription should return a subscription with matching customer ID");
+                "Writing a subscription should return a subscription with matching customer ID");
         // the ASIN should match
         assertEquals(ASIN, result.getAsin(),
-                     "Writing a subscription should return a subscription with matching ASIN");
+                "Writing a subscription should return a subscription with matching ASIN");
         // the frequency should match
         assertEquals(frequency, result.getFrequency(),
-                     "Writing a subscription should return a subscription with matching frequency");
+                "Writing a subscription should return a subscription with matching frequency");
     }
 
     @Test
@@ -61,10 +63,10 @@ public class SubscriptionFileStorageTest {
         // GIVEN - a new subscription to save
         int frequency = 1;
         Subscription newSubscription = Subscription.builder()
-                                                   .withAsin(ASIN)
-                                                   .withCustomerId(CUSTOMER_ID)
-                                                   .withFrequency(frequency)
-                                                   .build();
+                .withAsin(ASIN)
+                .withCustomerId(CUSTOMER_ID)
+                .withFrequency(frequency)
+                .build();
 
         // WHEN - create a new subscription
         Subscription result = subscriptionFileStorage.createSubscription(newSubscription);
@@ -74,13 +76,13 @@ public class SubscriptionFileStorageTest {
         Subscription refreshedSubscription = subscriptionFileStorage.getSubscriptionById(result.getId());
         // the customer ID should match
         assertEquals(CUSTOMER_ID, refreshedSubscription.getCustomerId(),
-                     "Reading a subscription after writing should result in matching customer ID");
+                "Reading a subscription after writing should result in matching customer ID");
         // the ASIN should match
         assertEquals(ASIN, refreshedSubscription.getAsin(),
-                     "Reading a subscription after writing should result in matching customer ID");
+                "Reading a subscription after writing should result in matching customer ID");
         // the frequency should match
         assertEquals(frequency, refreshedSubscription.getFrequency(),
-                     "Reading a subscription after writing should result in matching frequency");
+                "Reading a subscription after writing should result in matching frequency");
     }
 
     @Test
@@ -98,16 +100,16 @@ public class SubscriptionFileStorageTest {
         // THEN
         // the subscription ID should match
         assertEquals(subscriptionId, result.getId(),
-                     "Getting a subscription should return a subscription with same subscription ID");
+                "Getting a subscription should return a subscription with same subscription ID");
         // the customer ID should match
         assertEquals(expectedCustomerId, result.getCustomerId(),
-                     "Getting a subscription should return a subscription with correct customer ID");
+                "Getting a subscription should return a subscription with correct customer ID");
         // the ASIN should match
         assertEquals(expectedAsin, result.getAsin(),
-                     "Getting a subscription should return a subscription with correct ASIN");
+                "Getting a subscription should return a subscription with correct ASIN");
         // the frequency should match
         assertEquals(expectedFrequency, result.getFrequency(),
-                     "Getting a subscription should return a subscription with correct frequency");
+                "Getting a subscription should return a subscription with correct frequency");
     }
 
     @Test
@@ -115,11 +117,11 @@ public class SubscriptionFileStorageTest {
         // GIVEN - An existing subscription with frequency 1, updated to frequency 2
         int newFrequency = 2;
         Subscription updatedSubscription = Subscription.builder()
-                                                       .withSubscriptionId("1fe240f4-3296-4827-8c0e-7fa571b6f49f")
-                                                       .withCustomerId("amzn1.account.AEZI3A09486461G3DRR0VQPQHQ9I")
-                                                       .withAsin("B01BMDAVIY")
-                                                       .withFrequency(newFrequency)
-                                                       .build();
+                .withSubscriptionId("1fe240f4-3296-4827-8c0e-7fa571b6f49f")
+                .withCustomerId("amzn1.account.AEZI3A09486461G3DRR0VQPQHQ9I")
+                .withAsin("B01BMDAVIY")
+                .withFrequency(newFrequency)
+                .build();
 
         // WHEN - Update the subscription
         Subscription result = subscriptionFileStorage.updateSubscription(updatedSubscription);
@@ -129,7 +131,53 @@ public class SubscriptionFileStorageTest {
     }
 
 
-    // PARTICIPANTS: Remove this line and add your updateSubscription() tests here.
+    @Test
+    public void updateSubscription_withExistingSubscriptionAndUpdatedCustomerId_returnsUpdatedCustomerId() {
+        //GIBEN existing subscription with valid ustomer id, updated new customer
+        Subscription updatedSubscription = Subscription.builder()
+                .withSubscriptionId("1fe240f4-3296-4827-8c0e-7fa571b6f49f")
+                .withCustomerId(CUSTOMER_ID)
+                .withAsin("B01BMDAVIY")
+                .withFrequency(1)
+                .build();
+        // WHEN - Update the subscription
+        Subscription result = subscriptionFileStorage.updateSubscription(updatedSubscription);
+
+        // THEN - returned subscription frequency matches new value
+        assertEquals(CUSTOMER_ID, result.getCustomerId());
+
+    }
+
+
+    @Test
+    public void updateSubscription_withExistingSubscriptionAndUpdatedASIN_returnsUpdatedASIN() {
+        //GIBEN existing subscription with valid ASIN .
+        Subscription updatedSubscription = Subscription.builder()
+                .withSubscriptionId("1fe240f4-3296-4827-8c0e-7fa571b6f49f")
+                .withCustomerId("amzn1.account.AEZI3A09486461G3DRR0VQPQHQ9I")
+                .withAsin(ASIN)
+                .withFrequency(1)
+                .build();
+        // WHEN - Update the subscription
+        Subscription result = subscriptionFileStorage.updateSubscription(updatedSubscription);
+
+        // THEN - returned subscription frequency matches new value
+        assertEquals(ASIN, result.getAsin());
+
+
+    }
+
+  /*  @Test
+    public void updateSubscription_withNullSubscription_throwIllegalArgumentException() {
+    }
+
+    @Test
+    public void updateSubscription_withSubscriptionMissingId_throwIllegalArgumentException() {
+    }
+    @Test
+    public void updateSubscription_withNoSubscriptionFound_throwIllegalArgumentException() {
+    }*/
+
 
 
     @BeforeEach
